@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ranking Churrasco do Patrão na Lancha</title>
+<meta name="description" content="Ranking em tempo real da campanha Churrasco do Patrão na Lancha — Marins Benefícios.">
+<link rel="icon" type="image/png" href="logo.png">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ranking Churrasco do Patrão na Lancha">
+<meta property="og:description" content="Ranking em tempo real de corretores(as) e supervisores(as) — Marins Benefícios.">
+<meta property="og:image" content="{{PAGES_BASE_URL}}/logo.png">
+<meta property="og:url" content="{{PAGES_BASE_URL}}/">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ranking Churrasco do Patrão na Lancha">
+<meta name="twitter:description" content="Ranking em tempo real de corretores(as) e supervisores(as) — Marins Benefícios.">
+<meta name="twitter:image" content="{{PAGES_BASE_URL}}/logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4f7f6; --surface:#ffffff; --surface-2:#eef3f1;
+    --ink:#101f1c; --ink-2:#4c5c57; --ink-3:#8a948f;
+    --accent:#0f6f66; --accent-strong:#0b544d; --accent-soft:#e2f2ef; --accent-soft-ink:#0b544d;
+    --border:rgba(16,32,29,0.11); --border-strong:rgba(16,32,29,0.18);
+    --gold:#a9791c; --gold-bg:#faf1da;
+    --silver:#66707a; --silver-bg:#eef1f3;
+    --bronze:#a25a2b; --bronze-bg:#f8ecdf;
+    --shadow: 0 1px 2px rgba(16,32,29,0.06), 0 8px 24px -12px rgba(16,32,29,0.18);
+    --track:#e7ece9;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0a100f; --surface:#101817; --surface-2:#152020;
+      --ink:#eef4f2; --ink-2:#adbab5; --ink-3:#77837e;
+      --accent:#3db3a2; --accent-strong:#5ecab9; --accent-soft:#123531; --accent-soft-ink:#7fd8c9;
+      --border:rgba(255,255,255,0.10); --border-strong:rgba(255,255,255,0.16);
+      --gold:#e0b84a; --gold-bg:#332708;
+      --silver:#aab4bc; --silver-bg:#1c2327;
+      --bronze:#d98a52; --bronze-bg:#33200f;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.6);
+      --track:#1c2725;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0a100f; --surface:#101817; --surface-2:#152020;
+    --ink:#eef4f2; --ink-2:#adbab5; --ink-3:#77837e;
+    --accent:#3db3a2; --accent-strong:#5ecab9; --accent-soft:#123531; --accent-soft-ink:#7fd8c9;
+    --border:rgba(255,255,255,0.10); --border-strong:rgba(255,255,255,0.16);
+    --gold:#e0b84a; --gold-bg:#332708;
+    --silver:#aab4bc; --silver-bg:#1c2327;
+    --bronze:#d98a52; --bronze-bg:#33200f;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.6);
+    --track:#1c2725;
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif; }
+  .wrap{ max-width:1080px; margin:0 auto; padding-inline:20px; padding-block:28px 56px; }
+  h1,h2,h3{ font-family:"Sora",system-ui,sans-serif; letter-spacing:-0.01em; text-wrap:balance; margin:0; }
+  .num{ font-variant-numeric: tabular-nums; font-family:"IBM Plex Mono","IBM Plex Sans",monospace; }
+  a{ color:var(--accent); }
+
+  .topbar{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px; }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand-mark{ background:#ffffff; border-radius:10px; padding:6px 10px; display:flex; align-items:center; justify-content:center; flex:none; box-shadow:var(--shadow); }
+  .brand-mark img{ display:block; height:32px; width:auto; }
+  .brand h1{ font-size:21px; font-weight:800; }
+  .brand p{ margin:2px 0 0; color:var(--ink-2); font-size:12.5px; }
+  .status-pill{ display:inline-flex; align-items:center; gap:6px; background:var(--accent-soft); color:var(--accent-soft-ink); border:1px solid var(--border); padding:6px 12px; border-radius:99px; font-size:12.5px; font-weight:500; white-space:nowrap; }
+  .status-pill .dot{ width:7px; height:7px; border-radius:50%; background:currentColor; flex:none; animation:pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+
+  .period-banner{ display:flex; align-items:center; gap:14px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px 20px; box-shadow:var(--shadow); margin-bottom:20px; flex-wrap:wrap; }
+  .period-banner .p-title{ font-size:13px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-3); font-weight:700; }
+  .period-banner .p-range{ font-family:"Sora"; font-size:19px; font-weight:700; }
+  .period-banner .p-sep{ color:var(--ink-3); }
+  .period-banner .spacer{ flex:1 1 auto; }
+  .period-banner .p-updated{ font-size:12px; color:var(--ink-3); text-align:right; }
+  .period-banner .p-updated b{ color:var(--ink-2); font-weight:600; }
+
+  .kpis{ display:grid; grid-template-columns:minmax(0,260px); gap:12px; margin-bottom:26px; }
+  .kpi{ background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 16px 14px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:6px; min-width:0; }
+  .kpi-label{ font-size:12.5px; color:var(--ink-2); font-weight:500; }
+  .kpi-value{ font-size:25px; font-weight:700; font-family:"Sora"; line-height:1.05; }
+  .kpi-sub{ font-size:12px; color:var(--ink-3); }
+
+  .boards{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .board{ background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:20px; box-shadow:var(--shadow); min-width:0; }
+  .board-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:16px; }
+  .board-head h2{ font-size:16.5px; font-weight:700; }
+  .board-head .hint{ font-size:12px; color:var(--ink-3); }
+
+  .lb-row{ display:grid; grid-template-columns:34px 1fr auto; align-items:center; gap:12px; padding:10px 0; border-top:1px solid var(--border); }
+  .lb-row:first-child{ border-top:0; padding-top:0; }
+  .lb-rank{ display:flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:9px; font-family:"Sora"; font-weight:700; font-size:13px; background:var(--surface-2); color:var(--ink-2); flex:none; }
+  .lb-rank.r1{ background:var(--gold-bg); color:var(--gold); }
+  .lb-rank.r2{ background:var(--silver-bg); color:var(--silver); }
+  .lb-rank.r3{ background:var(--bronze-bg); color:var(--bronze); }
+  .lb-main{ min-width:0; display:flex; flex-direction:column; justify-content:center; }
+  .lb-name{ font-size:14.5px; font-weight:600; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .lb-figs{ text-align:right; flex:none; }
+  .lb-sub{ font-size:12px; color:var(--ink-2); font-weight:500; white-space:nowrap; }
+  .lb-empty{ padding:24px 0; text-align:center; color:var(--ink-3); font-size:13px; }
+
+  .note{ display:flex; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px 16px; font-size:12.5px; color:var(--ink-2); margin-top:22px; }
+  .note svg{ flex:none; margin-top:1px; color:var(--accent); }
+  .note b{ color:var(--ink); }
+
+  footer{ margin-top:24px; padding-top:16px; border-top:1px solid var(--border); font-size:12px; color:var(--ink-3); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+
+  @media (max-width:760px){
+    .boards{ grid-template-columns:1fr; }
+    .period-banner{ flex-direction:column; align-items:flex-start; }
+    .period-banner .p-updated{ text-align:left; }
+  }
+  @media (max-width:460px){
+    .kpis{ grid-template-columns:1fr; }
+    .lb-row{ grid-template-columns:28px 1fr auto; gap:8px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark"><img src="logo.png" alt="Marins Benef&iacute;cios"></div>
+      <div>
+        <h1>Ranking Churrasco do Patr&atilde;o na Lancha</h1>
+        <p>Marins Benef&iacute;cios &middot; corretores(as) e supervisores(as) em tempo real</p>
+      </div>
+    </div>
+    <span class="status-pill"><span class="dot"></span>Atualiza a cada hora</span>
+  </div>
+
+  <div class="period-banner">
+    <div>
+      <div class="p-title">Per&iacute;odo da campanha</div>
+      <div class="p-range num">21/09/2026 <span class="p-sep">&rarr;</span> 30/11/2026</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="p-updated">&Uacute;ltima atualiza&ccedil;&atilde;o<br><b id="updated-label">&mdash;</b></div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi">
+      <span class="kpi-label">Corretores(as) na disputa</span>
+      <span class="kpi-value num" id="kpi-total-corretores">0</span>
+      <span class="kpi-sub">com ao menos 1 venda no per&iacute;odo</span>
+    </div>
+  </div>
+
+  <div class="boards">
+    <div class="board">
+      <div class="board-head">
+        <h2>Por corretor(a)</h2>
+        <span class="hint">quem vende mais, sobe</span>
+      </div>
+      <div id="board-corretores"></div>
+    </div>
+    <div class="board">
+      <div class="board-head">
+        <h2>Por supervisor(a)</h2>
+        <span class="hint">quem vende mais, sobe</span>
+      </div>
+      <div id="board-supervisores"></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    <span><b>Como funciona:</b> este ranking soma as vendas PME (PJ) e PF cadastradas no Painel Comercial Marins com data de ades&atilde;o entre 21/09/2026 e 30/11/2026, e recalcula a posi&ccedil;&atilde;o de cada corretor(a) e supervisor(a) automaticamente a cada hora. Os valores n&atilde;o s&atilde;o exibidos &mdash; a posi&ccedil;&atilde;o fica em suspense at&eacute; o fim da campanha.</span>
+  </div>
+
+  <footer>
+    <span>Marins Benef&iacute;cios</span>
+    <span>Fonte: Painel Comercial Marins</span>
+  </footer>
+</div>
+
+<script>
+window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11-30", "atualizadoEm": "2026-09-22T11:06:15-03:00", "totalVendas": 4, "totalFaturamento": 4334.92, "corretores": [{"nome": "JANDILSON", "faturamento": 2884.2, "vendas": 1, "vidas": 4}, {"nome": "BIANCA CARVALHO", "faturamento": 597.55, "vendas": 1, "vidas": 2}, {"nome": "AMANDA DE OLIVEIRA", "faturamento": 556.96, "vendas": 1, "vidas": 3}, {"nome": "MAURO", "faturamento": 296.21, "vendas": 1, "vidas": 1}], "supervisores": [{"nome": "EWERTON", "faturamento": 3777.96, "vendas": 3, "vidas": 7}, {"nome": "ALOISIO", "faturamento": 556.96, "vendas": 1, "vidas": 3}]};
+</script>
+<script>
+(function(){
+  const D = window.__RANKING_DATA__ || {};
+
+  function fmtDate(iso){
+    if(!iso) return "&mdash;";
+    const d = new Date(iso);
+    if(isNaN(d.getTime())) return iso;
+    return d.toLocaleString("pt-BR", {day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit"});
+  }
+
+  document.getElementById("updated-label").textContent = fmtDate(D.atualizadoEm);
+  document.getElementById("kpi-total-corretores").textContent = (D.corretores||[]).length.toLocaleString("pt-BR");
+
+  function renderBoard(containerId, rows){
+    const el = document.getElementById(containerId);
+    if(!rows || !rows.length){
+      el.innerHTML = '<div class="lb-empty">Nenhuma venda registrada neste per&iacute;odo ainda.</div>';
+      return;
+    }
+    el.innerHTML = rows.map((r, i) => {
+      const rank = i + 1;
+      const rankClass = rank === 1 ? "r1" : rank === 2 ? "r2" : rank === 3 ? "r3" : "";
+      return `
+      <div class="lb-row ${rankClass}">
+        <div class="lb-rank ${rankClass}">${rank}</div>
+        <div class="lb-main">
+          <span class="lb-name">${escapeHtml(r.nome)}</span>
+        </div>
+        <div class="lb-figs">
+          <div class="lb-sub">${r.vendas} venda${r.vendas===1?'':'s'} &middot; ${r.vidas} vida${r.vidas===1?'':'s'}</div>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  function escapeHtml(s){
+    return String(s||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+
+  renderBoard("board-corretores", D.corretores || []);
+  renderBoard("board-supervisores", D.supervisores || []);
+})();
+</script>
+</body>
+</html>

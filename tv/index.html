@@ -53,13 +53,29 @@
             function applyScale(contentHeight){
                   frame.style.width = RANKING_BASE_WIDTH + 'px';
                   frame.style.height = contentHeight + 'px';
-// preenche sempre a largura inteira da tela (elimina as faixas brancas
-                  // do layout centralizado original); a altura acompanha proporcionalmente
-                  var scale = window.innerWidth / RANKING_BASE_WIDTH;
+// aumenta o ranking o máximo possível para preencher a tela da tv,
+                  // sem nunca cortar ninguém da lista (por isso usa o menor fator entre
+                  // largura e altura — se a lista for muito comprida, sobra uma margem
+                  // fina nas laterais em vez de esconder gente do ranking)
+                  var scaleX = window.innerWidth / RANKING_BASE_WIDTH;
+                  var scaleY = window.innerHeight / contentHeight;
+                  var scale = Math.min(scaleX, scaleY);
+                  var scaledW = RANKING_BASE_WIDTH * scale;
                   var scaledH = contentHeight * scale;
                   scaleWrap.style.transform = 'scale(' + scale + ')';
-                  scaleWrap.style.left = '0px';
-                  scaleWrap.style.top = Math.max(0, Math.round((window.innerHeight - scaledH) / 2)) + 'px';
+                  scaleWrap.style.left = Math.round((window.innerWidth - scaledW) / 2) + 'px';
+                  scaleWrap.style.top = Math.round((window.innerHeight - scaledH) / 2) + 'px';
+            }
+
+            // remove só o rodapé explicativo (texto "Como funciona" + créditos) e
+            // reduz um pouco o respiro do topo/rodapé, pra sobrar mais espaço pro
+            // ranking em si na tv — nunca esconde nenhum corretor(a)/supervisor(a)
+            function injectTVStyles(doc){
+                  if (doc.getElementById('tv-compact-style')) return;
+                  var style = doc.createElement('style');
+                  style.id = 'tv-compact-style';
+                  style.textContent = '.note, footer { display:none !important; } .wrap { padding-block: 12px 12px !important; }';
+                  doc.head.appendChild(style);
             }
 
             function fitRankingToScreen(){
@@ -69,6 +85,7 @@
                           applyScale(FALLBACK_CONTENT_HEIGHT);
                           return;
                   }
+                  try { injectTVStyles(doc); } catch(e){}
               var h = Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight) || FALLBACK_CONTENT_HEIGHT;
                   applyScale(h);
             }

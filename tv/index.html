@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modo TV — Marins Benefícios</title>
+<style>
+  html, body { margin:0; padding:0; width:100%; height:100%; background:#000; overflow:hidden; font-family:system-ui, sans-serif; }
+  .slide { position:fixed; inset:0; width:100vw; height:100vh; opacity:0; pointer-events:none; transition:opacity .6s ease; background:#000; }
+  .slide.active { opacity:1; pointer-events:auto; }
+  #slide-ranking iframe { width:100%; height:100%; border:0; display:block; background:#f4f7f6; }
+  #slide-video video { width:100%; height:100%; object-fit:contain; display:block; background:#000; }
+  #sound-toggle { position:fixed; bottom:18px; right:18px; z-index:9999; width:52px; height:52px; border-radius:50%; border:none; background:#0f6f66; color:#fff; font-size:20px; line-height:52px; text-align:center; padding:0; box-shadow:0 6px 20px rgba(0,0,0,.28); cursor:pointer; opacity:0; pointer-events:none; transition:opacity .3s ease; }
+  #sound-toggle.visible { opacity:.85; pointer-events:auto; }
+</style>
+</head>
+<body>
+
+<div id="slide-ranking" class="slide active">
+  <iframe id="ranking-frame" title="Ranking"></iframe>
+</div>
+
+<div id="slide-video" class="slide">
+  <video id="tv-video" src="video.mp4" muted playsinline preload="auto"></video>
+</div>
+
+<button id="sound-toggle" aria-label="Ativar ou desativar som do vídeo">🔇</button>
+
+<script>
+(function(){
+  var RANKING_SECONDS = 25;   // tempo que o ranking fica na tela antes de passar para o vídeo
+  var ERROR_RETRY_SECONDS = 8; // se o vídeo falhar ao carregar, volta pro ranking rápido
+  var RANKING_URL = "https://ranking.marinsbeneficios.com.br/";
+
+  var slideRanking = document.getElementById('slide-ranking');
+  var slideVideo = document.getElementById('slide-video');
+  var frame = document.getElementById('ranking-frame');
+  var video = document.getElementById('tv-video');
+  var soundBtn = document.getElementById('sound-toggle');
+
+  var rankingTimer = null;
+  var videoFallbackTimer = null;
+
+  function showRanking(){
+    clearTimeout(rankingTimer);
+    clearTimeout(videoFallbackTimer);
+    video.pause();
+    slideVideo.classList.remove('active');
+    soundBtn.classList.remove('visible');
+    slideRanking.classList.add('active');
+    // recarrega o ranking para pegar os dados mais recentes a cada ciclo
+    frame.src = RANKING_URL + '?tv=' + Date.now();
+    rankingTimer = setTimeout(showVideo, RANKING_SECONDS * 1000);
+  }
+
+  function showVideo(){
+    clearTimeout(rankingTimer);
+    slideRanking.classList.remove('active');
+    slideVideo.classList.add('active');
+    soundBtn.classList.add('visible');
+    try { video.currentTime = 0; } catch(e){}
+    var playPromise = video.play();
+    if (playPromise && playPromise.catch) playPromise.catch(function(){ /* autoplay bloqueado; o fallback de tempo cobre isso */ });
+    var fallbackMs = (isFinite(video.duration) && video.duration > 0 ? video.duration + 3 : 300) * 1000;
+    videoFallbackTimer = setTimeout(showRanking, fallbackMs);
+  }
+
+  video.addEventListener('ended', showRanking);
+  video.addEventListener('error', function(){
+    clearTimeout(videoFallbackTimer);
+    videoFallbackTimer = setTimeout(showRanking, ERROR_RETRY_SECONDS * 1000);
+  });
+
+  soundBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    video.muted = !video.muted;
+    soundBtn.textContent = video.muted ? '🔇' : '🔊';
+  });
+
+  // inicia o ciclo
+  showRanking();
+})();
+</script>
+
+</body>
+</html>

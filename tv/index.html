@@ -53,14 +53,13 @@
             function applyScale(contentHeight){
                   frame.style.width = RANKING_BASE_WIDTH + 'px';
                   frame.style.height = contentHeight + 'px';
-                  var scaleX = window.innerWidth / RANKING_BASE_WIDTH;
-                  var scaleY = window.innerHeight / contentHeight;
-            var scale = Math.min(scaleX, scaleY);
-                  var scaledW = RANKING_BASE_WIDTH * scale;
+// preenche sempre a largura inteira da tela (elimina as faixas brancas
+                  // do layout centralizado original); a altura acompanha proporcionalmente
+                  var scale = window.innerWidth / RANKING_BASE_WIDTH;
                   var scaledH = contentHeight * scale;
                   scaleWrap.style.transform = 'scale(' + scale + ')';
-                  scaleWrap.style.left = Math.round((window.innerWidth - scaledW) / 2) + 'px';
-                  scaleWrap.style.top = Math.round((window.innerHeight - scaledH) / 2) + 'px';
+                  scaleWrap.style.left = '0px';
+                  scaleWrap.style.top = Math.max(0, Math.round((window.innerHeight - scaledH) / 2)) + 'px';
             }
 
             function fitRankingToScreen(){

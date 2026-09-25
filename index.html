@@ -32,6 +32,7 @@
     --gold:#a9791c; --gold-bg:#faf1da;
     --silver:#66707a; --silver-bg:#eef1f3;
     --bronze:#a25a2b; --bronze-bg:#f8ecdf;
+    --up:#1f9d55; --down:#d64545;
     --shadow: 0 1px 2px rgba(16,32,29,0.06), 0 8px 24px -12px rgba(16,32,29,0.18);
     --track:#e7ece9;
     color-scheme: light;
@@ -45,6 +46,7 @@
       --gold:#e0b84a; --gold-bg:#332708;
       --silver:#aab4bc; --silver-bg:#1c2327;
       --bronze:#d98a52; --bronze-bg:#33200f;
+      --up:#3ecb82; --down:#ff6b6b;
       --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.6);
       --track:#1c2725;
       color-scheme: dark;
@@ -58,6 +60,7 @@
     --gold:#e0b84a; --gold-bg:#332708;
     --silver:#aab4bc; --silver-bg:#1c2327;
     --bronze:#d98a52; --bronze-bg:#33200f;
+    --up:#3ecb82; --down:#ff6b6b;
     --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px -12px rgba(0,0,0,0.6);
     --track:#1c2725;
     color-scheme: dark;
@@ -107,7 +110,12 @@
   .lb-rank.r2{ background:var(--silver-bg); color:var(--silver); }
   .lb-rank.r3{ background:var(--bronze-bg); color:var(--bronze); }
   .lb-main{ min-width:0; display:flex; flex-direction:column; justify-content:center; }
+  .lb-name-row{ display:flex; align-items:center; gap:5px; min-width:0; }
   .lb-name{ font-size:14.5px; font-weight:600; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .lb-arrow{ display:inline-flex; align-items:center; justify-content:center; flex:none; font-size:11px; font-weight:800; line-height:1; }
+  .lb-arrow.up{ color:var(--up); }
+  .lb-arrow.down{ color:var(--down); }
+  .lb-arrow.same{ color:var(--ink-3); font-size:13px; }
   .lb-figs{ text-align:right; flex:none; }
   .lb-sub{ font-size:12px; color:var(--ink-2); font-weight:500; white-space:nowrap; }
   .lb-empty{ padding:24px 0; text-align:center; color:var(--ink-3); font-size:13px; }
@@ -133,6 +141,90 @@
 <audio id="bgm" loop preload="auto" src="AudioCleaner_Download_Harmonia%20-%20Churrasco%20(Clipe%20Oficial).mp3"></audio>
 <button id="bgm-toggle" aria-label="Tocar ou pausar musica" style="position:fixed;bottom:18px;right:18px;z-index:9999;width:52px;height:52px;border-radius:50%;border:none;background:#0f6f66;color:#fff;font-size:22px;line-height:52px;text-align:center;padding:0;box-shadow:0 6px 20px rgba(0,0,0,.28);cursor:pointer;"></button>
 <script>(function(){var audio=document.getElementById('bgm');var btn=document.getElementById('bgm-toggle');var PLAY='▶';var PAUSE='⏸';function setIcon(playing){btn.textContent=playing?PAUSE:PLAY;}function tryPlay(){audio.play().then(function(){setIcon(true);}).catch(function(){setIcon(false);});}document.addEventListener('click',function first(){tryPlay();document.removeEventListener('click',first);},{once:true});document.addEventListener('touchstart',function firstT(){tryPlay();document.removeEventListener('touchstart',firstT);},{once:true,passive:true});btn.addEventListener('click',function(e){e.stopPropagation();if(audio.paused){tryPlay();}else{audio.pause();setIcon(false);}});setIcon(false);})();</script>
+<script>
+(function(){
+  function playOvertakeSound(){
+    try{
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if(!Ctx) return;
+      var ctx = new Ctx();
+      if(ctx.state === 'suspended'){ ctx.resume(); }
+      var now = ctx.currentTime;
+      var dur = 1.3;
+
+      var osc = ctx.createOscillator();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(90, now);
+      osc.frequency.exponentialRampToValueAtTime(280, now + dur*0.42);
+      osc.frequency.exponentialRampToValueAtTime(65, now + dur);
+
+      var filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(500, now);
+      filter.frequency.linearRampToValueAtTime(4000, now + dur*0.42);
+      filter.frequency.linearRampToValueAtTime(300, now + dur);
+      filter.Q.value = 5;
+
+      var gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.55, now + dur*0.38);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+      var bufferSize = Math.floor(ctx.sampleRate * dur);
+      var noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      var data = noiseBuffer.getChannelData(0);
+      for(var i=0;i<bufferSize;i++){ data[i] = (Math.random()*2-1) * 0.7; }
+      var noise = ctx.createBufferSource();
+      noise.buffer = noiseBuffer;
+      var noiseFilter = ctx.createBiquadFilter();
+      noiseFilter.type = 'bandpass';
+      noiseFilter.frequency.setValueAtTime(900, now);
+      noiseFilter.frequency.linearRampToValueAtTime(4500, now + dur*0.42);
+      noiseFilter.frequency.linearRampToValueAtTime(500, now + dur);
+      noiseFilter.Q.value = 0.9;
+      var noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.0001, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.3, now + dur*0.35);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+      var merger = ctx.createGain();
+      if(ctx.createStereoPanner){
+        var panner = ctx.createStereoPanner();
+        panner.pan.setValueAtTime(-1, now);
+        panner.pan.linearRampToValueAtTime(1, now + dur);
+        merger.connect(panner);
+        panner.connect(ctx.destination);
+      } else {
+        merger.connect(ctx.destination);
+      }
+
+      osc.connect(filter); filter.connect(gain); gain.connect(merger);
+      noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(merger);
+
+      osc.start(now); osc.stop(now + dur);
+      noise.start(now); noise.stop(now + dur);
+    }catch(e){}
+  }
+
+  var played = false;
+  function tryOvertake(){
+    if(played) return;
+    if(window.__overtakePending){
+      played = true;
+      playOvertakeSound();
+      window.__overtakePending = false;
+    }
+  }
+  window.__playOvertakeSound = playOvertakeSound;
+  document.addEventListener('click', tryOvertake);
+  document.addEventListener('touchstart', tryOvertake, {passive:true});
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      if(window.__overtakePending && !played){ played = true; playOvertakeSound(); }
+    }, 400);
+  });
+})();
+</script>
 <img src="banner-churrasco-do-patrao.webp" alt="Churrasco do Patr&atilde;o &mdash; Marins Benef&iacute;cios" style="display:block;width:100%;max-width:1600px;height:auto;margin:0 auto;">
 <div class="wrap">
   <div class="topbar">
@@ -192,6 +284,15 @@ window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11
 
   document.getElementById("updated-label").textContent = fmtDate(D.atualizadoEm);
 
+  let hasOvertake = false;
+
+  function arrowHtml(r, rank){
+    const prev = (typeof r.prevRank === "number") ? r.prevRank : null;
+    if(prev == null || prev === rank) return '<span class="lb-arrow same" aria-hidden="true">&middot;</span>';
+    if(prev > rank){ hasOvertake = true; return '<span class="lb-arrow up" aria-hidden="true">&#9650;</span>'; }
+    return '<span class="lb-arrow down" aria-hidden="true">&#9660;</span>';
+  }
+
   function renderBoard(containerId, rows){
     const el = document.getElementById(containerId);
     if(!rows || !rows.length){
@@ -205,7 +306,7 @@ window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11
       <div class="lb-row ${rankClass}">
         <div class="lb-rank ${rankClass}">${rank}</div>
         <div class="lb-main">
-          <span class="lb-name">${escapeHtml(r.nome)}</span>
+          <span class="lb-name-row">${arrowHtml(r, rank)}<span class="lb-name">${escapeHtml(r.nome)}</span></span>
         </div>
         <div class="lb-figs">
           <div class="lb-sub">${r.vendas} venda${r.vendas===1?'':'s'} &middot; ${r.vidas} vida${r.vidas===1?'':'s'}</div>
@@ -220,6 +321,7 @@ window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11
 
   renderBoard("board-corretores", D.corretores || []);
   renderBoard("board-supervisores", D.supervisores || []);
+  window.__overtakePending = hasOvertake;
 })();
 </script>
 </body>

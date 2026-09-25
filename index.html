@@ -70,7 +70,7 @@
   .num{ font-variant-numeric: tabular-nums; font-family:"IBM Plex Mono","IBM Plex Sans",monospace; }
   a{ color:var(--accent); }
 
-  .topbar{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px; }
+  .topbar{ display:flex; align-items:flex-start; justify-content:flex-end; gap:16px; flex-wrap:wrap; margin-bottom:18px; }
   .brand{ display:flex; align-items:center; gap:12px; }
   .brand-mark{ background:#ffffff; border-radius:10px; padding:6px 10px; display:flex; align-items:center; justify-content:center; flex:none; box-shadow:var(--shadow); }
     .brand-mark img{ display:block; height:56px; width:auto; }
@@ -133,15 +133,9 @@
 <audio id="bgm" loop preload="auto" src="AudioCleaner_Download_Harmonia%20-%20Churrasco%20(Clipe%20Oficial).mp3"></audio>
 <button id="bgm-toggle" aria-label="Tocar ou pausar musica" style="position:fixed;bottom:18px;right:18px;z-index:9999;width:52px;height:52px;border-radius:50%;border:none;background:#0f6f66;color:#fff;font-size:22px;line-height:52px;text-align:center;padding:0;box-shadow:0 6px 20px rgba(0,0,0,.28);cursor:pointer;"></button>
 <script>(function(){var audio=document.getElementById('bgm');var btn=document.getElementById('bgm-toggle');var PLAY='▶';var PAUSE='⏸';function setIcon(playing){btn.textContent=playing?PAUSE:PLAY;}function tryPlay(){audio.play().then(function(){setIcon(true);}).catch(function(){setIcon(false);});}document.addEventListener('click',function first(){tryPlay();document.removeEventListener('click',first);},{once:true});document.addEventListener('touchstart',function firstT(){tryPlay();document.removeEventListener('touchstart',firstT);},{once:true,passive:true});btn.addEventListener('click',function(e){e.stopPropagation();if(audio.paused){tryPlay();}else{audio.pause();setIcon(false);}});setIcon(false);})();</script>
+<img src="banner-churrasco-do-patrao.webp" alt="Churrasco do Patr&atilde;o &mdash; Marins Benef&iacute;cios" style="display:block;width:100%;max-width:1600px;height:auto;margin:0 auto;">
 <div class="wrap">
   <div class="topbar">
-    <div class="brand">
-            <div class="brand-mark"><img src="23bcebba-19b4-4f21-a763-c3fc3aa01333.png" alt="Churrasco do Patr&atilde;o"></div>
-      <div>
-        <h1>Ranking Churrasco do Patr&atilde;o na Lancha</h1>
-        <p>Marins Benef&iacute;cios &middot; corretores(as) e supervisores(as) em tempo real</p>
-      </div>
-    </div>
     <span class="status-pill"><span class="dot"></span>Atualiza a cada hora</span>
   </div>
 
@@ -152,14 +146,6 @@
     </div>
     <div class="spacer"></div>
     <div class="p-updated">&Uacute;ltima atualiza&ccedil;&atilde;o<br><b id="updated-label">&mdash;</b></div>
-  </div>
-
-  <div class="kpis">
-    <div class="kpi">
-      <span class="kpi-label">Corretores(as) na disputa</span>
-      <span class="kpi-value num" id="kpi-total-corretores">0</span>
-      <span class="kpi-sub">com ao menos 1 venda no per&iacute;odo</span>
-    </div>
   </div>
 
   <div class="boards">
@@ -205,7 +191,6 @@ window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11
   }
 
   document.getElementById("updated-label").textContent = fmtDate(D.atualizadoEm);
-  document.getElementById("kpi-total-corretores").textContent = (D.corretores||[]).length.toLocaleString("pt-BR");
 
   function renderBoard(containerId, rows){
     const el = document.getElementById(containerId);

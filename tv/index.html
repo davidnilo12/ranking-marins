@@ -14,6 +14,16 @@
       #slide-video video { width:100%; height:100%; object-fit:contain; display:block; background:#000; }
       #sound-toggle { position:fixed; bottom:18px; right:18px; z-index:9999; width:52px; height:52px; border-radius:50%; border:none; background:#0f6f66; color:#fff; font-size:20px; line-height:52px; text-align:center; padding:0; box-shadow:0 6px 20px rgba(0,0,0,.28); cursor:pointer; opacity:0; pointer-events:none; transition:opacity .3s ease; }
       #sound-toggle.visible { opacity:.85; pointer-events:auto; }
+
+      #slide-weekly { background:#f4f7f6; display:flex; align-items:center; justify-content:center; }
+      #slide-weekly .weekly-wrap { width:100%; height:100%; max-width:1700px; margin:0 auto; padding:2.2vh 3vw 3vh; display:flex; flex-direction:column; align-items:center; box-sizing:border-box; }
+      #slide-weekly .weekly-img { width:100%; max-height:56vh; object-fit:contain; border-radius:18px; box-shadow:0 20px 50px -20px rgba(11,42,38,.35); }
+      #slide-weekly .weekly-text { width:100%; margin-top:3vh; font-family:"IBM Plex Sans",system-ui,sans-serif; }
+      #slide-weekly .weekly-text h2 { font-family:"Sora",system-ui,sans-serif; font-size:2.1vw; font-weight:800; color:#0b544d; margin:0 0 1.6vh; letter-spacing:-0.01em; }
+      #slide-weekly .weekly-text ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1.3vh; }
+      #slide-weekly .weekly-text li { font-size:1.55vw; line-height:1.35; color:#101f1c; padding-left:1.6vw; position:relative; }
+      #slide-weekly .weekly-text li::before { content:""; position:absolute; left:0; top:.6vw; width:.6vw; height:.6vw; border-radius:50%; background:#0f6f66; }
+      #slide-weekly .weekly-text li b { color:#0b544d; }
     </style>
   </head>
   <body>
@@ -21,6 +31,21 @@
       <div id="slide-ranking" class="slide active">
           <div id="ranking-scale-wrap">
                 <iframe id="ranking-frame" title="Ranking" scrolling="no"></iframe>
+          </div>
+      </div>
+
+      <div id="slide-weekly" class="slide">
+          <div class="weekly-wrap">
+              <img class="weekly-img" src="resumo-semana.jpg" alt="Resumo da semana">
+              <div class="weekly-text">
+                  <h2>Destaques da semana</h2>
+                  <ul>
+                      <li>Semana de <b>22 a 28/09</b>: <b>12 vendas</b> fechadas, <b>R$ 16.068,87</b> em faturamento e <b>29 vidas</b> seguradas.</li>
+                      <li><b>CATIA</b> foi o destaque da semana, com 2 vendas e R$ 3.791,40 em faturamento — assumiu a liderança geral do ranking de corretores(as).</li>
+                      <li><b>GLEICE</b> fez sua primeira venda da campanha e estreou no ranking.</li>
+                      <li>Maior venda individual da semana: <b>JANDILSON</b>, R$ 2.884,20 (Zig Zag Alimentos, plano AMIL).</li>
+                  </ul>
+              </div>
           </div>
       </div>
 
@@ -33,13 +58,15 @@
 
       <script>
         (function(){
-            var RANKING_SECONDS = 25;    // tempo que o ranking fica na tela antes de passar para o vídeo
+            var RANKING_SECONDS = 25;    // tempo que o ranking fica na tela antes de passar para o resumo semanal
+            var WEEKLY_SECONDS = 20;     // tempo que o resumo da semana fica na tela antes de passar para o vídeo
             var ERROR_RETRY_SECONDS = 8; // se o vídeo falhar ao carregar, volta pro ranking rápido
             var RANKING_URL = "https://ranking.marinsbeneficios.com.br/";
             var RANKING_BASE_WIDTH = 1120; // largura "de projeto" da página do ranking (layout de duas colunas)
             var FALLBACK_CONTENT_HEIGHT = 900; // usado enquanto o ranking ainda não terminou de carregar
 
             var slideRanking = document.getElementById('slide-ranking');
+            var slideWeekly = document.getElementById('slide-weekly');
             var slideVideo = document.getElementById('slide-video');
             var scaleWrap = document.getElementById('ranking-scale-wrap');
             var frame = document.getElementById('ranking-frame');
@@ -47,8 +74,15 @@
             var soundBtn = document.getElementById('sound-toggle');
 
             var rankingTimer = null;
+            var weeklyTimer = null;
             var videoFallbackTimer = null;
             var fitRetryTimer = null;
+
+            function hideAllSlides(){
+                  slideRanking.classList.remove('active');
+                  slideWeekly.classList.remove('active');
+                  slideVideo.classList.remove('active');
+            }
 
             function applyScale(contentHeight){
                   frame.style.width = RANKING_BASE_WIDTH + 'px';
@@ -99,20 +133,30 @@
 
             function showRanking(){
                   clearTimeout(rankingTimer);
+                  clearTimeout(weeklyTimer);
                   clearTimeout(videoFallbackTimer);
                   video.pause();
-                  slideVideo.classList.remove('active');
                   soundBtn.classList.remove('visible');
+                  hideAllSlides();
                   slideRanking.classList.add('active');
                   // recarrega o ranking para pegar os dados mais recentes a cada ciclo
                   applyScale(FALLBACK_CONTENT_HEIGHT);
                   frame.src = RANKING_URL + '?tv=' + Date.now();
-                  rankingTimer = setTimeout(showVideo, RANKING_SECONDS * 1000);
+                  rankingTimer = setTimeout(showWeekly, RANKING_SECONDS * 1000);
+            }
+
+            function showWeekly(){
+                  clearTimeout(rankingTimer);
+                  clearTimeout(weeklyTimer);
+                  hideAllSlides();
+                  slideWeekly.classList.add('active');
+                  weeklyTimer = setTimeout(showVideo, WEEKLY_SECONDS * 1000);
             }
 
             function showVideo(){
                   clearTimeout(rankingTimer);
-                  slideRanking.classList.remove('active');
+                  clearTimeout(weeklyTimer);
+                  hideAllSlides();
                         slideVideo.classList.add('active');
                   soundBtn.classList.add('visible');
                   try { video.currentTime = 0; } catch(e){}

@@ -112,7 +112,7 @@
   .lb-main{ min-width:0; display:flex; flex-direction:column; justify-content:center; }
   .lb-name-row{ display:flex; align-items:center; gap:5px; min-width:0; }
   .lb-name{ font-size:14.5px; font-weight:600; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .lb-arrow{ display:inline-flex; align-items:center; justify-content:center; flex:none; font-size:11px; font-weight:800; line-height:1; }
+  .lb-arrow{ display:inline-flex; align-items:center; justify-content:center; flex:none; width:16px; font-size:13px; font-weight:800; line-height:1; }
   .lb-arrow.up{ color:var(--up); }
   .lb-arrow.down{ color:var(--down); }
   .lb-arrow.same{ color:var(--ink-3); font-size:13px; }
@@ -277,7 +277,7 @@
 </div>
 
 <script>
-window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11-30", "atualizadoEm": "2026-10-05T12:29:07-03:00", "corretores": [{"nome": "JANDILSON", "prevRank": 1}, {"nome": "YAGO", "prevRank": 2}, {"nome": "LEANDRO MULLER", "prevRank": 3}, {"nome": "ANA CRISTINE", "prevRank": 4}, {"nome": "ADRIANA RAPOSO", "prevRank": 5}, {"nome": "ELEN BEATRIZ", "prevRank": 6}, {"nome": "JAQUELINE LIMA", "prevRank": 7}, {"nome": "CATIA", "prevRank": 8}, {"nome": "SHEYLA", "prevRank": 9}, {"nome": "VANIA", "prevRank": 10}, {"nome": "RODRIGO", "prevRank": 11}, {"nome": "LEONARDO JOSE", "prevRank": 12}, {"nome": "LUCINERE (COD. ADAILTON)", "prevRank": 13}, {"nome": "BIANCA CARVALHO", "prevRank": 14}, {"nome": "GLEICE", "prevRank": 15}, {"nome": "AMANDA DE OLIVEIRA", "prevRank": 16}, {"nome": "JULIANA ALINE", "prevRank": 17}, {"nome": "MAURO", "prevRank": 18}, {"nome": "ANNA JULIA", "prevRank": 19}], "supervisores": [{"nome": "EWERTON", "prevRank": 1}, {"nome": "ALOISIO", "prevRank": 2}, {"nome": "BIANCA LIMA", "prevRank": 3}, {"nome": "DAVID", "prevRank": 4}]};
+window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11-30", "atualizadoEm": "2026-10-05T12:39:42-03:00", "corretores": [{"nome": "JANDILSON", "prevRank": 1}, {"nome": "YAGO", "prevRank": 2}, {"nome": "LEANDRO MULLER"}, {"nome": "ANA CRISTINE", "prevRank": 3}, {"nome": "ADRIANA RAPOSO", "prevRank": 4}, {"nome": "ELEN BEATRIZ", "prevRank": 5}, {"nome": "JAQUELINE LIMA", "prevRank": 6}, {"nome": "CATIA", "prevRank": 7}, {"nome": "SHEYLA", "prevRank": 8}, {"nome": "VANIA", "prevRank": 9}, {"nome": "RODRIGO", "prevRank": 10}, {"nome": "LEONARDO JOSE", "prevRank": 11}, {"nome": "LUCINERE (COD. ADAILTON)", "prevRank": 12}, {"nome": "BIANCA CARVALHO", "prevRank": 13}, {"nome": "GLEICE", "prevRank": 14}, {"nome": "AMANDA DE OLIVEIRA", "prevRank": 15}, {"nome": "JULIANA ALINE", "prevRank": 16}, {"nome": "MAURO", "prevRank": 17}, {"nome": "ANNA JULIA", "prevRank": 18}], "supervisores": [{"nome": "EWERTON", "prevRank": 1}, {"nome": "ALOISIO", "prevRank": 2}, {"nome": "BIANCA LIMA", "prevRank": 3}, {"nome": "DAVID", "prevRank": 4}]};
 </script>
 <script>
 (function(){
@@ -296,7 +296,8 @@ window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11
 
   function arrowHtml(r, rank){
     const prev = (typeof r.prevRank === "number") ? r.prevRank : null;
-    if(prev == null || prev === rank) return '<span class="lb-arrow same" aria-hidden="true">&middot;</span>';
+    if(prev == null) return '<span class="lb-arrow up" aria-hidden="true" title="Entrou no ranking">&#9650;</span>';
+    if(prev === rank) return '<span class="lb-arrow same" aria-hidden="true">&middot;</span>';
     if(prev > rank){ hasOvertake = true; return '<span class="lb-arrow up" aria-hidden="true">&#9650;</span>'; }
     return '<span class="lb-arrow down" aria-hidden="true">&#9660;</span>';
   }

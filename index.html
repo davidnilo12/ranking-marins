@@ -267,7 +267,7 @@
 
   <div class="note">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-    <span><b>Como funciona:</b> este ranking soma as vendas PME (PJ) e PF cadastradas no Painel Comercial Marins com data de ades&atilde;o entre 21/09/2026 e 30/11/2026, e recalcula a posi&ccedil;&atilde;o de cada corretor(a) e supervisor(a) automaticamente a cada hora. Os valores n&atilde;o s&atilde;o exibidos &mdash; a posi&ccedil;&atilde;o fica em suspense at&eacute; o fim da campanha.</span>
+    <span><b>Como funciona:</b> este ranking soma as vendas PME (PJ) e PF cadastradas no Painel Comercial Marins com data de ades&atilde;o entre 21/09/2026 e 30/11/2026, e recalcula a posi&ccedil;&atilde;o de cada corretor(a) e supervisor(a) automaticamente &agrave;s 13h e &agrave;s 19h, de segunda a sexta. Os valores e as quantidades n&atilde;o s&atilde;o exibidos &mdash; a posi&ccedil;&atilde;o fica em suspense at&eacute; o fim da campanha.</span>
   </div>
 
   <footer>
@@ -277,7 +277,7 @@
 </div>
 
 <script>
-window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11-30", "atualizadoEm": "2026-10-05T11:25:20-03:00", "totalVendas": 31, "corretores": [{"nome": "ALOISIO", "vendas": 3, "vidas": 8, "prevRank": 7}, {"nome": "JANDILSON", "vendas": 1, "vidas": 4, "prevRank": 2}, {"nome": "YAGO", "vendas": 2, "vidas": 5, "prevRank": 3}, {"nome": "LEANDRO MULLER", "vendas": 1, "vidas": 4}, {"nome": "ANA CRISTINE", "vendas": 2, "vidas": 9, "prevRank": 1}, {"nome": "ADRIANA RAPOSO", "vendas": 2, "vidas": 5, "prevRank": 4}, {"nome": "ELEN BEATRIZ", "vendas": 2, "vidas": 4, "prevRank": 5}, {"nome": "JAQUELINE LIMA", "vendas": 2, "vidas": 5, "prevRank": 15}, {"nome": "CATIA", "vendas": 2, "vidas": 2, "prevRank": 6}, {"nome": "SHEYLA", "vendas": 1, "vidas": 6, "prevRank": 9}, {"nome": "VANIA", "vendas": 1, "vidas": 1, "prevRank": 10}, {"nome": "RODRIGO", "vendas": 1, "vidas": 3, "prevRank": 11}, {"nome": "LEONARDO JOSE", "vendas": 1, "vidas": 1, "prevRank": 12}, {"nome": "BIANCA LIMA", "vendas": 1, "vidas": 3, "prevRank": 13}, {"nome": "LUCINERE (COD. ADAILTON)", "vendas": 1, "vidas": 5, "prevRank": 14}, {"nome": "BIANCA CARVALHO", "vendas": 2, "vidas": 3, "prevRank": 8}, {"nome": "GLEICE", "vendas": 1, "vidas": 3, "prevRank": 16}, {"nome": "AMANDA DE OLIVEIRA", "vendas": 1, "vidas": 3, "prevRank": 17}, {"nome": "JULIANA ALINE", "vendas": 1, "vidas": 2, "prevRank": 18}, {"nome": "MAURO", "vendas": 1, "vidas": 1, "prevRank": 19}, {"nome": "ANNA JULIA", "vendas": 1, "vidas": 1, "prevRank": 21}, {"nome": "EWERTON", "vendas": 1, "vidas": 3, "prevRank": 20}], "supervisores": [{"nome": "EWERTON", "vendas": 17, "vidas": 44, "prevRank": 1}, {"nome": "ALOISIO", "vendas": 9, "vidas": 25, "prevRank": 2}, {"nome": "BIANCA LIMA", "vendas": 4, "vidas": 9, "prevRank": 3}, {"nome": "DAVID", "vendas": 1, "vidas": 3, "prevRank": 4}]};
+window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11-30", "atualizadoEm": "2026-10-05T12:29:07-03:00", "corretores": [{"nome": "JANDILSON", "prevRank": 1}, {"nome": "YAGO", "prevRank": 2}, {"nome": "LEANDRO MULLER", "prevRank": 3}, {"nome": "ANA CRISTINE", "prevRank": 4}, {"nome": "ADRIANA RAPOSO", "prevRank": 5}, {"nome": "ELEN BEATRIZ", "prevRank": 6}, {"nome": "JAQUELINE LIMA", "prevRank": 7}, {"nome": "CATIA", "prevRank": 8}, {"nome": "SHEYLA", "prevRank": 9}, {"nome": "VANIA", "prevRank": 10}, {"nome": "RODRIGO", "prevRank": 11}, {"nome": "LEONARDO JOSE", "prevRank": 12}, {"nome": "LUCINERE (COD. ADAILTON)", "prevRank": 13}, {"nome": "BIANCA CARVALHO", "prevRank": 14}, {"nome": "GLEICE", "prevRank": 15}, {"nome": "AMANDA DE OLIVEIRA", "prevRank": 16}, {"nome": "JULIANA ALINE", "prevRank": 17}, {"nome": "MAURO", "prevRank": 18}, {"nome": "ANNA JULIA", "prevRank": 19}], "supervisores": [{"nome": "EWERTON", "prevRank": 1}, {"nome": "ALOISIO", "prevRank": 2}, {"nome": "BIANCA LIMA", "prevRank": 3}, {"nome": "DAVID", "prevRank": 4}]};
 </script>
 <script>
 (function(){
@@ -315,9 +315,6 @@ window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11
         <div class="lb-rank ${rankClass}">${rank}</div>
         <div class="lb-main">
           <span class="lb-name-row">${arrowHtml(r, rank)}<span class="lb-name">${escapeHtml(r.nome)}</span></span>
-        </div>
-        <div class="lb-figs">
-          <div class="lb-sub">${r.vendas} venda${r.vendas===1?'':'s'} &middot; ${r.vidas} vida${r.vidas===1?'':'s'}</div>
         </div>
       </div>`;
     }).join("");

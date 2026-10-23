@@ -120,6 +120,14 @@
   .lb-sub{ font-size:12px; color:var(--ink-2); font-weight:500; white-space:nowrap; }
   .lb-empty{ padding:24px 0; text-align:center; color:var(--ink-3); font-size:13px; }
 
+  .lb-row.winner{ background:var(--accent-soft); margin-inline:-20px; padding-inline:20px; border-radius:12px; border-top-color:transparent; }
+  .lb-row.winner:first-child{ padding-top:10px; }
+  .lb-row.winner + .lb-row.winner{ margin-top:2px; }
+  .lb-row.winner-top5{ background:var(--gold-bg); }
+  .lb-row.winner-top5 .lb-rank{ background:var(--gold); color:#fff; }
+  .lb-badge{ display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:700; letter-spacing:0.03em; text-transform:uppercase; white-space:nowrap; padding:4px 9px; border-radius:99px; background:var(--accent); color:#fff; flex:none; }
+  .lb-badge.top5{ background:var(--gold); color:#2a1d00; }
+
   .note{ display:flex; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px 16px; font-size:12.5px; color:var(--ink-2); margin-top:22px; }
   .note svg{ flex:none; margin-top:1px; color:var(--accent); }
   .note b{ color:var(--ink); }
@@ -252,7 +260,7 @@
     <div class="board">
       <div class="board-head">
         <h2>Por corretor(a)</h2>
-        <span class="hint">quem vende mais, sobe</span>
+        <span class="hint">top 18 s&atilde;o os vencedores</span>
       </div>
       <div id="board-corretores"></div>
     </div>
@@ -267,7 +275,7 @@
 
   <div class="note">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-    <span><b>Como funciona:</b> este ranking soma as vendas PME (PJ) e PF cadastradas no Painel Comercial Marins com data de ades&atilde;o entre 21/09/2026 e 30/11/2026, e recalcula a posi&ccedil;&atilde;o de cada corretor(a) e supervisor(a) automaticamente &agrave;s 13h e &agrave;s 19h, de segunda a sexta. Os valores e as quantidades n&atilde;o s&atilde;o exibidos &mdash; a posi&ccedil;&atilde;o fica em suspense at&eacute; o fim da campanha.</span>
+    <span><b>Como funciona:</b> este ranking soma as vendas PME (PJ) e PF cadastradas no Painel Comercial Marins com data de ades&atilde;o entre 21/09/2026 e 30/11/2026, e recalcula a posi&ccedil;&atilde;o de cada corretor(a) e supervisor(a) automaticamente &agrave;s 13h e &agrave;s 19h, de segunda a sexta. Os valores e as quantidades n&atilde;o s&atilde;o exibidos &mdash; a posi&ccedil;&atilde;o fica em suspense at&eacute; o fim da campanha. Os <b>18 primeiros colocados</b> no ranking de corretores(as) s&atilde;o os vencedores da campanha, com destaque especial para os <b>5 primeiros colocados</b>.</span>
   </div>
 
   <footer>
@@ -302,7 +310,8 @@ window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11
     return '<span class="lb-arrow down" aria-hidden="true">&#9660;</span>';
   }
 
-  function renderBoard(containerId, rows){
+  function renderBoard(containerId, rows, opts){
+    opts = opts || {};
     const el = document.getElementById(containerId);
     if(!rows || !rows.length){
       el.innerHTML = '<div class="lb-empty">Nenhuma venda registrada neste per&iacute;odo ainda.</div>';
@@ -311,12 +320,24 @@ window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11
     el.innerHTML = rows.map((r, i) => {
       const rank = i + 1;
       const rankClass = rank === 1 ? "r1" : rank === 2 ? "r2" : rank === 3 ? "r3" : "";
+      let winnerClass = "";
+      let badge = "";
+      if(opts.winnersCutoff && rank <= opts.winnersCutoff){
+        if(opts.top5Cutoff && rank <= opts.top5Cutoff){
+          winnerClass = " winner winner-top5";
+          badge = '<span class="lb-badge top5">&#127942; Top 5</span>';
+        } else {
+          winnerClass = " winner";
+          badge = '<span class="lb-badge">Vencedor</span>';
+        }
+      }
       return `
-      <div class="lb-row ${rankClass}">
+      <div class="lb-row ${rankClass}${winnerClass}">
         <div class="lb-rank ${rankClass}">${rank}</div>
         <div class="lb-main">
           <span class="lb-name-row">${arrowHtml(r, rank)}<span class="lb-name">${escapeHtml(r.nome)}</span></span>
         </div>
+        ${badge ? `<div class="lb-figs">${badge}</div>` : ""}
       </div>`;
     }).join("");
   }
@@ -325,7 +346,7 @@ window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11
     return String(s||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   }
 
-  renderBoard("board-corretores", D.corretores || []);
+  renderBoard("board-corretores", D.corretores || [], {winnersCutoff: 18, top5Cutoff: 5});
   renderBoard("board-supervisores", D.supervisores || []);
   window.__overtakePending = hasOvertake;
 })();

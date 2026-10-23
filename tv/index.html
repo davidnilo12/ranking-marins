@@ -54,8 +54,6 @@
   .row.r1 .rk{background:var(--gold);color:#2b1f02}.row.r1 .nm{color:#ffe7a3}
   .row.r2{background:var(--silver-bg)}.row.r2 .rk{background:var(--silver);color:#1b2126}
   .row.r3{background:var(--bronze-bg)}.row.r3 .rk{background:var(--bronze);color:#2a1505}
-  .row.winner:not(.r1):not(.r2):not(.r3) .rk{box-shadow:inset 0 0 0 2px var(--accent-strong)}
-  .row.winner-top5:not(.r1):not(.r2):not(.r3) .rk{background:var(--accent);color:#06231f;box-shadow:none}
   .empty{color:var(--ink-3);font-size:28px;padding:40px 0;text-align:center}
   .foot{position:absolute;left:56px;right:110px;bottom:16px;display:flex;justify-content:space-between;font-size:19px;color:var(--ink-3)}
   #progress{position:absolute;left:0;bottom:0;height:6px;width:100%;background:linear-gradient(90deg,var(--accent),var(--gold));transform-origin:left;transform:scaleX(0)}
@@ -169,9 +167,6 @@
     var fs = Math.round(h * 0.44), rk = Math.round(h * 0.72);
     el.innerHTML = rows.map(function(r, i){
       var rank = i + 1, cls = rank <= 3 ? ' r' + rank : '';
-      if (opts.winnersCutoff && rank <= opts.winnersCutoff){
-        cls += (opts.top5Cutoff && rank <= opts.top5Cutoff) ? ' winner winner-top5' : ' winner';
-      }
       return '<div class="row' + cls + '" style="animation-delay:' + (i*35) + 'ms">' +
         '<span class="rk" style="width:' + rk + 'px;height:' + rk + 'px;font-size:' + Math.round(fs*.95) + 'px">' + rank + '</span>' +
         '<span style="font-size:' + Math.round(fs*.8) + 'px" class="arrow-wrap">' + arrow(r, rank) + '</span>' +
@@ -182,7 +177,7 @@
     var D = lastData || {};
     $('tvRange').textContent = fmtDate(D.periodoInicio) + '  →  ' + fmtDate(D.periodoFim);
     $('tvUpdated').textContent = 'Atualizado em ' + fmtUpdated(D.atualizadoEm);
-    renderBoard($('gCor'), D.corretores, { cols: function(n){ return n > 36 ? 4 : n > 12 ? 3 : 1; }, maxH: 66, fallbackH: 640, winnersCutoff: 18, top5Cutoff: 5 });
+    renderBoard($('gCor'), D.corretores, { cols: function(n){ return n > 36 ? 4 : n > 12 ? 3 : 1; }, maxH: 66, fallbackH: 640 });
     renderBoard($('gSup'), D.supervisores, { cols: function(){ return 1; }, maxH: 78, fallbackH: 640 });
   }
 

@@ -68,7 +68,7 @@
 
   *{box-sizing:border-box;}
   body{ margin:0; background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif; }
-  .wrap{ max-width:1080px; margin:0 auto; padding-inline:20px; padding-block:28px 56px; }
+  .wrap{ max-width:1320px; margin:0 auto; padding-inline:20px; padding-block:28px 56px; }
   h1,h2,h3{ font-family:"Sora",system-ui,sans-serif; letter-spacing:-0.01em; text-wrap:balance; margin:0; }
   .num{ font-variant-numeric: tabular-nums; font-family:"IBM Plex Mono","IBM Plex Sans",monospace; }
   a{ color:var(--accent); }
@@ -97,7 +97,16 @@
   .kpi-value{ font-size:25px; font-weight:700; font-family:"Sora"; line-height:1.05; }
   .kpi-sub{ font-size:12px; color:var(--ink-3); }
 
-  .boards{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .layout{ display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:22px; align-items:start; }
+  .boards{ display:grid; grid-template-columns:1fr 1fr; gap:18px; min-width:0; }
+
+  .video-col{ background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:16px; box-shadow:var(--shadow); position:sticky; top:20px; }
+  .video-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:12px; }
+  .video-head h2{ font-size:16.5px; font-weight:700; }
+  .video-head .hint{ font-size:12px; color:var(--ink-3); }
+  .video-frame{ position:relative; border-radius:12px; overflow:hidden; background:#000; }
+  .video-frame video{ display:block; width:100%; height:auto; border-radius:12px; }
+  .video-col .video-cap{ margin-top:10px; font-size:12px; color:var(--ink-3); line-height:1.5; }
   .board{ background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:20px; box-shadow:var(--shadow); min-width:0; }
   .board-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:16px; }
   .board-head h2{ font-size:16.5px; font-weight:700; }
@@ -129,6 +138,10 @@
 
   footer{ margin-top:24px; padding-top:16px; border-top:1px solid var(--border); font-size:12px; color:var(--ink-3); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
 
+  @media (max-width:1140px){
+    .layout{ grid-template-columns:1fr; }
+    .video-col{ position:static; }
+  }
   @media (max-width:760px){
     .boards{ grid-template-columns:1fr; }
     .period-banner{ flex-direction:column; align-items:flex-start; }
@@ -251,21 +264,36 @@
     <div class="p-updated">&Uacute;ltima atualiza&ccedil;&atilde;o<br><b id="updated-label">&mdash;</b></div>
   </div>
 
-  <div class="boards">
-    <div class="board">
-      <div class="board-head">
-        <h2>Por corretor(a)</h2>
-        <span class="hint">top 18 s&atilde;o os vencedores</span>
+  <div class="layout">
+    <div class="boards">
+      <div class="board">
+        <div class="board-head">
+          <h2>Por corretor(a)</h2>
+          <span class="hint">top 18 s&atilde;o os vencedores</span>
+        </div>
+        <div id="board-corretores"></div>
       </div>
-      <div id="board-corretores"></div>
-    </div>
-    <div class="board">
-      <div class="board-head">
-        <h2>Por supervisor(a)</h2>
-        <span class="hint">quem vende mais, sobe</span>
+      <div class="board">
+        <div class="board-head">
+          <h2>Por supervisor(a)</h2>
+          <span class="hint">quem vende mais, sobe</span>
+        </div>
+        <div id="board-supervisores"></div>
       </div>
-      <div id="board-supervisores"></div>
     </div>
+
+    <aside class="video-col">
+      <div class="video-head">
+        <h2>&#127942; A corrida at&eacute; aqui</h2>
+        <span class="hint">desde 21/09</span>
+      </div>
+      <div class="video-frame">
+        <video controls playsinline preload="metadata" poster="ranking-corrida-poster.jpg">
+          <source src="ranking-corrida.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="video-cap">Evolu&ccedil;&atilde;o acumulada das posi&ccedil;&otilde;es (top 25) ao longo de toda a campanha. Sem valores exibidos.</div>
+    </aside>
   </div>
 
   <div class="note">

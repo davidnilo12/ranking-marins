@@ -106,6 +106,7 @@
   .video-frame{ position:relative; border-radius:14px; overflow:hidden; background:#000; }
   .video-frame video{ display:block; width:100%; height:auto; border-radius:14px; }
   .video-frame #race-video-mute{ position:absolute; bottom:16px; right:16px; width:46px; height:46px; border-radius:50%; border:none; background:rgba(16,32,29,0.6); color:#fff; font-size:19px; line-height:46px; text-align:center; padding:0; cursor:pointer; backdrop-filter:blur(2px); }
+  .video-frame #race-video-play{ position:absolute; bottom:16px; left:16px; width:46px; height:46px; border-radius:50%; border:none; background:rgba(16,32,29,0.6); color:#fff; font-size:17px; line-height:46px; text-align:center; padding:0; cursor:pointer; backdrop-filter:blur(2px); }
   .video-section .video-cap{ margin-top:12px; font-size:13px; color:var(--ink-3); line-height:1.5; }
   .board{ background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:20px; box-shadow:var(--shadow); min-width:0; }
   .board-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:16px; }
@@ -260,6 +261,7 @@
       <video id="race-video" autoplay loop muted playsinline preload="auto" poster="ranking-corrida-poster.jpg">
         <source src="ranking-corrida.mp4" type="video/mp4">
       </video>
+      <button id="race-video-play" aria-label="Pausar ou retomar o v&iacute;deo" type="button">&#9208;</button>
       <button id="race-video-mute" aria-label="Ativar ou desativar o som" type="button">&#128263;</button>
     </div>
     <div class="video-cap">Evolu&ccedil;&atilde;o acumulada das posi&ccedil;&otilde;es (top 25) ao longo de toda a campanha, tocando em loop. Sem valores exibidos.</div>
@@ -370,15 +372,26 @@ window.__RANKING_DATA__ = {"periodoInicio": "2026-09-21", "periodoFim": "2026-11
 (function(){
   var v = document.getElementById('race-video');
   var btn = document.getElementById('race-video-mute');
+  var playBtn = document.getElementById('race-video-play');
   if(!v || !btn) return;
   function setIcon(){ btn.textContent = v.muted ? '🔇' : '🔊'; }
+  function setPlayIcon(){ if(playBtn) playBtn.textContent = v.paused ? '▶' : '⏸'; }
   setIcon();
+  setPlayIcon();
   btn.addEventListener('click', function(e){
     e.stopPropagation();
     v.muted = !v.muted;
     if(!v.muted){ v.play().catch(function(){}); }
     setIcon();
   });
+  if(playBtn){
+    playBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      if(v.paused){ v.play().catch(function(){}); } else { v.pause(); }
+    });
+    v.addEventListener('play', setPlayIcon);
+    v.addEventListener('pause', setPlayIcon);
+  }
   v.play().catch(function(){});
 })();
 </script>
